@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
+    <title>Koshi Section C Master Prep</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-secondary: #cbd5e1;
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            --correct-color: #00e676;
+            --wrong-color: #ff1744;
+            --timer-color: #f472b6;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0f172a;
+            background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                              radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+                              radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+            margin: 0; padding: 0; color: var(--text-main);
+            min-height: 100vh; -webkit-tap-highlight-color: transparent;
+        }
+
+        /* --- IMMERSIVE LAYOUT --- */
+        .screen {
+            display: none; padding: 24px; max-width: 600px; margin: 0 auto;
+            min-height: 100vh; box-sizing: border-box; flex-direction: column;
+            animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .screen.active { display: flex; }
+        
+        #screen-home.active, #screen-result.active, #screen-login.active { justify-content: center; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- TYPOGRAPHY --- */
+        h1 {
+            font-size: 2.2rem; font-weight: 800; text-align: center;
+            background: linear-gradient(to right, #4ade80, #2dd4bf);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 5px; line-height: 1.2; text-shadow: 0 10px 30px rgba(45, 212, 191, 0.3);
+        }
+        h2 { font-size: 1.8rem; text-align: center; margin-bottom: 20px; }
+        p { color: var(--text-secondary); font-size: 1rem; line-height: 1.6; }
+
+        /* --- GLASSMORPHISM CARDS --- */
+        .glass-card {
+            background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border); border-radius: 24px; padding: 30px 24px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36); margin-bottom: 20px;
+        }
+
+        /* --- INPUTS --- */
+        input, select {
+            width: 100%; padding: 18px; margin: 12px 0; background: rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--glass-border); border-radius: 16px; color: white;
+            font-size: 1.1rem; font-family: 'Poppins', sans-serif; outline: none; transition: 0.3s; box-sizing: border-box;
+        }
+        input:focus, select:focus { border-color: #6366f1; background: rgba(0,0,0,0.5); }
+        select option { background: #0f172a; }
+
+        /* --- BUTTONS --- */
+        .btn {
+            width: 100%; padding: 20px; border: none; border-radius: 18px; font-size: 1.2rem; font-weight: 600;
+            cursor: pointer; color: white; margin-bottom: 16px; position: relative; overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s; display: flex; align-items: center; justify-content: center; text-align: center;
+        }
+        .btn:active { transform: scale(0.96); }
+
+        .btn-primary { background: var(--primary-gradient); box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4); }
+        .btn-success { background: linear-gradient(135deg, #059669 0%, #34d399 100%); box-shadow: 0 4px 20px rgba(52, 211, 153, 0.4); }
+        .btn-premium { background: linear-gradient(135deg, #d97706 0%, #fbbf24 100%); box-shadow: 0 4px 20px rgba(251, 191, 36, 0.4); }
+        .btn-outline { background: transparent; border: 2px solid var(--glass-border); color: var(--text-secondary); }
+
+        /* --- TOPIC GRID --- */
+        .topic-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+        .topic-btn {
+            background: rgba(0, 0, 0, 0.3); border: 1px solid var(--glass-border);
+            padding: 16px 20px; border-radius: 16px; text-align: left; font-size: 1rem;
+            color: white; display: flex; align-items: center; cursor: pointer; transition: 0.2s;
+        }
+        .topic-btn:hover { background: rgba(99, 102, 241, 0.2); border-color: #6366f1; }
+        .topic-badge {
+            background: var(--primary-gradient); color: white; font-size: 0.85rem; font-weight: 700;
+            padding: 4px 10px; border-radius: 12px; margin-right: 15px; flex-shrink: 0;
+        }
+
+        /* --- QUIZ INTERFACE --- */
+        .top-compliment { text-align: center; height: 40px; font-size: 1.4rem; font-weight: 700; margin-bottom: 10px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); transition: all 0.3s; }
+        .quiz-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; font-size: 1rem; color: var(--text-secondary); font-weight: 500; }
+        
+        .question-text { font-size: 1.35rem; font-weight: 600; line-height: 1.5; margin-bottom: 30px; }
+        
+        .option-btn {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border);
+            padding: 20px; border-radius: 16px; margin-bottom: 14px; font-size: 1.1rem;
+            text-align: left; display: flex; align-items: center; transition: 0.2s; cursor: pointer;
+        }
+        .option-circle {
+            width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.1);
+            display: flex; justify-content: center; align-items: center;
+            margin-right: 15px; font-size: 0.9rem; font-weight: 700; flex-shrink: 0;
+        }
+
+        .option-btn.correct { background: rgba(0, 230, 118, 0.2); border-color: var(--correct-color); }
+        .option-btn.correct .option-circle { background: var(--correct-color); color: black; }
+        .option-btn.wrong { background: rgba(255, 23, 68, 0.2); border-color: var(--wrong-color); }
+        .option-btn.wrong .option-circle { background: var(--wrong-color); color: white; }
+
+        .explanation-box { margin-top: 20px; background: rgba(99, 102, 241, 0.15); border-left: 4px solid #6366f1; padding: 20px; border-radius: 12px; font-size: 1rem; line-height: 1.6; display: none; animation: fadeIn 0.3s; }
+
+        /* --- SKIP OVERLAY --- */
+        .skip-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.98); backdrop-filter: blur(10px);
+            z-index: 2000; display: none; flex-direction: column; padding: 24px; box-sizing: border-box;
+            animation: fadeIn 0.3s;
+        }
+        .skip-overlay.active { display: flex; }
+        .skip-grid {
+            display: grid; grid-template-columns: repeat(10, 1fr); gap: 8px;
+            margin-top: 20px; overflow-y: auto; padding-bottom: 40px;
+        }
+        .skip-num {
+            aspect-ratio: 1/1; border-radius: 50%; border: 1px solid var(--glass-border);
+            background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem; font-weight: 600; cursor: pointer; color: var(--text-secondary);
+        }
+        .skip-num.current { border-color: #4ade80; color: #4ade80; background: rgba(74, 222, 128, 0.1); }
+        .skip-num:active { background: #6366f1; color: white; }
+
+        /* --- UTILS --- */
+        .hidden { display: none !important; }
+        .spinner { width: 24px; height: 24px; border: 3px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; margin-left: 10px; display: inline-block; vertical-align: middle; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div id="screen-home" class="screen active">
+        <h1>Koshi Province</h1>
+        <p style="text-align:center; margin-bottom: 30px;">Exam Master Pro</p>
+        <div class="glass-card">
+            <h3 style="text-align:center; margin-top:0; color:var(--text-secondary)">Candidate Login</h3>
+            <input type="text" id="input-name" placeholder="Enter Your Name">
+            <select id="input-qual">
+                <option value="" disabled selected>Select Qualification</option>
+                <option value="Engineer">Engineer</option>
+                <option value="Sub Engineer">Sub Engineer</option>
+                <option value="Assistant Sub Engineer">Asst. Sub Engineer</option>
+            </select>
+            <button class="btn btn-primary" onclick="app.saveUser()">Enter Dashboard ➔</button>
+        </div>
+    </div>
+
+    <div id="screen-dash" class="screen">
+        <h2 id="user-greeting" style="margin-top: 0; color: #4ade80;">Hello, Candidate!</h2>
+        <div style="text-align: center; margin-bottom: 28px;">
+            <span style="background: var(--primary-gradient); padding: 10px 22px; border-radius: 50px; font-weight: 700; font-size: 1.05rem; box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4); border: 1px solid rgba(255,255,255,0.2); display: inline-block;">
+                🚀 1300+ Loksewa MCQs Included
+            </span>
+        </div>
+        <div id="topics-container" class="topic-grid"></div>
+    </div>
+
+    <div id="screen-topic-detail" class="screen">
+        <h2 id="detail-topic-title" style="font-size: 1.5rem; color: #2dd4bf; margin-top: 0;">Topic Title</h2>
+        <div class="glass-card">
+            <button class="btn btn-success" onclick="app.loadSet('A')">Set A - Free Preview (10 MCQs)</button>
+            <button id="btn-set-b" class="btn btn-premium" onclick="app.loadSet('B')">Set B - Premium MCQs 🔐</button>
+            <button id="btn-mistakes" class="btn btn-outline" style="border-color: #f43f5e; color: #f43f5e;" onclick="app.loadMistakes()">Practice Mistakes ⚠️ (<span id="mistake-count">0</span>)</button>
+            <button class="btn btn-outline" style="margin-top: 10px;" onclick="app.showScreen('screen-dash')">← Back to Dashboard</button>
+        </div>
+    </div>
+
+    <div id="screen-login" class="screen">
+        <div class="glass-card" style="text-align:center;">
+            <h2>Premium Access 🔐</h2>
+            <input type="text" id="premium-code" placeholder="Enter Code Here" style="text-align:center; font-size:1.4rem; letter-spacing:2px;">
+            <button class="btn btn-primary" id="btn-verify" onclick="app.verifyCode()">Verify & Unlock</button>
+            <button class="btn" style="background:#25D366; margin-top: 15px;" onclick="app.openWhatsApp()">Get Code on WhatsApp</button>
+            <button class="btn btn-outline" style="margin-top: 10px;" onclick="app.showScreen('screen-topic-detail')">Cancel</button>
+        </div>
+    </div>
+
+    <div id="screen-quiz" class="screen">
+        <div id="feedback-top" class="top-compliment"></div>
+        <div class="glass-card">
+            <div class="quiz-meta">
+                <span id="quiz-progress" style="background:rgba(255,255,255,0.1); padding:5px 15px; border-radius:20px;">1 / 20</span>
+                <span id="quiz-score" style="color: #4ade80; font-weight: 700;">Score: 0</span>
+                <button id="btn-skip" class="hidden" style="background:rgba(255,255,255,0.1); border:1px solid var(--glass-border); color:white; padding:5px 15px; border-radius:20px; cursor:pointer;" onclick="app.openSkipGrid()">Skip ➔</button>
+            </div>
+            <div id="question-text" class="question-text">Loading...</div>
+            <div id="options-container"></div>
+        </div>
+        <div id="explanation-box" class="explanation-box"></div>
+        <div id="next-btn-container" class="hidden" style="margin-top:20px;">
+            <button class="btn btn-primary" id="btn-next" onclick="app.nextQuestion()">Next Question ➡</button>
+        </div>
+        <button class="btn btn-outline" style="margin-top: 20px; border: none;" onclick="app.showScreen('screen-topic-detail')">Quit Exam</button>
+    </div>
+
+    <div id="screen-result" class="screen">
+        <div class="glass-card" style="text-align:center; margin-top: 40px;">
+            <h2 id="result-name">Quiz Completed!</h2>
+            <div style="font-size:5rem; font-weight:800; color:#4ade80;" id="final-score">0%</div>
+            <p id="result-accuracy"></p>
+            <p id="result-msg"></p>
+            <button class="btn btn-primary" style="margin-top:30px;" onclick="app.showScreen('screen-dash')">Return to Dashboard</button>
+        </div>
+    </div>
+
+    <div id="skip-overlay" class="skip-overlay">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h3 style="margin:0;">Jump to MCQ</h3>
+            <button class="btn" style="width:auto; padding:10px 20px; margin:0;" onclick="app.closeSkipGrid()">Close</button>
+        </div>
+        <div id="skip-grid" class="skip-grid"></div>
+    </div>
+
+    <script>
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw4EBwp_tSyWgTnNsdBNnCNRa0Nzj1bAjjCuG2SaffMU1_wHuIFpieOouOb0Zl5KjpsrA/exec"; 
+        const WHATSAPP_URL = "https://wa.me/qr/O7FO3PRTOUFGO1";
+
+        const allTopics = [
+    { id: "9", title: "नेपालको संविधानको भाग १ देखि ५ र भाग १३ देखि २२ सम्म तथा अनुसूचीहरू" },
+    { id: "10", title: "प्रदेश निजामती सेवा ऐन, २०७९ (कोशी प्रदेश) सम्बन्धी सामान्य जानकारी" },
+    { id: "11", title: "प्रदेश निजामती सेवा नियमावली, २०८१ (कोशी प्रदेश) सम्बन्धी सामान्य जानकारी" },
+    { id: "12", title: "स्थानीय सरकारी सेवा (गठन तथा सञ्चालन) ऐन, २०८० (कोशी प्रदेश) सम्बन्धी सामान्य जानकारी" },
+    { id: "13", title: "प्रदेश सुशासन (व्यवस्थापन तथा सञ्चालन) ऐन, २०७६ (कोशी प्रदेश) सम्बन्धी सामान्य जानकारी" },
+    { id: "14", title: "प्रदेश लोक सेवा आयोग ऐन, २०७६ (कोशी प्रदेश) सम्बन्धी सामान्य जानकारी" },
+    { id: "15", title: "प्रदेश आर्थिक कार्यविधि तथा वित्तीय उत्तरदायित्व ऐन, २०७८ (कोशी प्रदेश) को परिच्छेद १ र परिच्छेद ६ सम्बन्धी जानकारी" },
+    { id: "16", title: "कोशी प्रदेशको योजनावद्ध विकास तथा चालु आवधिक योजनासम्बन्धी सामान्य जानकारी" },
+    { id: "17", title: "सेवा समूहको पदको कार्यसँग सम्बद्ध प्रचलित कानूनी व्यवस्था बारे सामान्य जानकारी" }
+];
+
+
+        const app = {
+            state: {
+                user: { name: "", qual: "" },
+                isPremium: false,
+                currentTopicId: null,
+                quizSet: [],
+                currentIndex: 0,
+                score: 0,
+                isMistakeMode: false,
+                mistakeBank: JSON.parse(localStorage.getItem('madesh_mistake_bank')) || {}
+            },
+
+            // Audio Engine
+            audio: {
+                correct: new Audio('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3'),
+                wrong: new Audio('https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3')
+            },
+
+            playSfx: function(isCorrect) {
+                const sound = isCorrect ? this.audio.correct : this.audio.wrong;
+                sound.currentTime = 0;
+                sound.play().catch(e => console.log("Audio blocked"));
+            },
+
+            init: function() {
+                const savedUser = localStorage.getItem('madesh_pro_user');
+                const savedPremium = localStorage.getItem('madesh_pro_premium');
+                if (savedPremium === 'true') this.state.isPremium = true;
+                if (savedUser) {
+                    this.state.user = JSON.parse(savedUser);
+                    this.buildDashboard();
+                    this.showScreen('screen-dash');
+                }
+            },
+
+            showScreen: function(id) {
+                document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+                document.getElementById(id).classList.add('active');
+                window.scrollTo(0,0);
+            },
+
+            saveUser: function() {
+                const name = document.getElementById('input-name').value.trim();
+                const qual = document.getElementById('input-qual').value;
+                if(!name || !qual) return alert("Please enter Name and Qualification");
+                this.state.user = { name, qual };
+                localStorage.setItem('madesh_pro_user', JSON.stringify(this.state.user));
+                this.buildDashboard();
+                this.showScreen('screen-dash');
+            },
+
+            buildDashboard: function() {
+                document.getElementById('user-greeting').innerText = `Hello, ${this.state.user.name.split(" ")[0]}!`;
+                const container = document.getElementById('topics-container');
+                container.innerHTML = "";
+                allTopics.forEach(topic => {
+                    const btn = document.createElement('div');
+                    btn.className = 'topic-btn';
+                    btn.innerHTML = `<span class="topic-badge">${topic.id}</span> <span>${topic.title}</span>`;
+                    btn.onclick = () => this.openTopic(topic);
+                    container.appendChild(btn);
+                });
+            },
+
+            openTopic: function(topic) {
+                this.state.currentTopicId = topic.id;
+                document.getElementById('detail-topic-title').innerText = `${topic.id}: ${topic.title}`;
+                
+                const btnB = document.getElementById('btn-set-b');
+                if (this.state.isPremium) {
+                    btnB.innerText = "Set B - Unlocked ✔️";
+                    btnB.classList.replace('btn-premium', 'btn-primary');
+                } else {
+                    btnB.innerText = "Set B - Premium MCQs 🔐";
+                    btnB.classList.replace('btn-primary', 'btn-premium');
+                }
+
+                // Update Mistake Count UI
+                const mistakes = this.state.mistakeBank[topic.id] || [];
+                document.getElementById('mistake-count').innerText = mistakes.length;
+
+                this.showScreen('screen-topic-detail');
+            },
+
+            loadSet: async function(setType) {
+                if (setType === 'B' && !this.state.isPremium) {
+                    this.showScreen('screen-login');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`json/${this.state.currentTopicId}.json`);
+                    if (!response.ok) return alert("JSON File not found.");
+                    const data = await response.json();
+                    
+                    if (setType === 'A') {
+                        this.state.quizSet = data.slice(0, 10);
+                        this.toggleSetUI('A');
+                    } else {
+                        this.state.quizSet = data.slice(10);
+                        this.toggleSetUI('B');
+                    }
+                    
+                    this.state.isMistakeMode = false;
+                    this.startQuiz();
+                } catch (error) {
+                    alert("Error loading quiz data.");
+                }
+            },
+
+            loadMistakes: function() {
+                const mistakes = this.state.mistakeBank[this.state.currentTopicId] || [];
+                if (mistakes.length === 0) return alert("No mistakes saved for this topic!");
+                
+                this.state.quizSet = [...mistakes];
+                this.state.isMistakeMode = true;
+                this.toggleSetUI('A'); // Keep simple UI for mistakes
+                this.startQuiz();
+            },
+
+            toggleSetUI: function(type) {
+                const scoreEl = document.getElementById('quiz-score');
+                const skipBtn = document.getElementById('btn-skip');
+                if(type === 'B') {
+                    scoreEl.classList.add('hidden');
+                    skipBtn.classList.remove('hidden');
+                } else {
+                    scoreEl.classList.remove('hidden');
+                    skipBtn.classList.add('hidden');
+                }
+            },
+
+            startQuiz: function() {
+                this.state.currentIndex = 0;
+                this.state.score = 0;
+                this.showScreen('screen-quiz');
+                this.renderQuestion();
+            },
+
+            renderQuestion: function() {
+                const q = this.state.quizSet[this.state.currentIndex];
+                document.getElementById('quiz-progress').innerText = `${this.state.currentIndex + 1} / ${this.state.quizSet.length}`;
+                document.getElementById('quiz-score').innerText = `Score: ${this.state.score}`;
+                document.getElementById('question-text').innerText = q.q;
+
+                const optsDiv = document.getElementById('options-container');
+                optsDiv.innerHTML = "";
+                document.getElementById('feedback-top').innerText = "";
+                document.getElementById('explanation-box').style.display = 'none';
+                document.getElementById('next-btn-container').classList.add('hidden');
+
+                const letters = ['A', 'B', 'C', 'D'];
+                q.o.forEach((opt, index) => {
+                    const btn = document.createElement('div');
+                    btn.className = 'option-btn';
+                    btn.innerHTML = `<div class="option-circle">${letters[index]}</div> ${opt}`;
+                    btn.onclick = () => this.handleAnswer(index, btn);
+                    optsDiv.appendChild(btn);
+                });
+            },
+
+            handleAnswer: function(selectedIndex, btnElement) {
+                const allBtns = document.querySelectorAll('.option-btn');
+                allBtns.forEach(b => b.style.pointerEvents = 'none');
+
+                const q = this.state.quizSet[this.state.currentIndex];
+                const isCorrect = selectedIndex === q.a;
+                const feedbackTop = document.getElementById('feedback-top');
+                const firstName = this.state.user.name.split(" ")[0];
+
+                this.playSfx(isCorrect);
+
+                if (isCorrect) {
+                    btnElement.classList.add('correct');
+                    this.state.score++;
+                    feedbackTop.style.color = "#4ade80";
+                    feedbackTop.innerText = `Correct, ${firstName}! 🌟`;
+                    
+                    // If in mistake practice, remove from bank
+                    if (this.state.isMistakeMode) {
+                        this.removeFromMistakeBank(q);
+                    }
+                } else {
+                    btnElement.classList.add('wrong');
+                    allBtns[q.a].classList.add('correct');
+                    feedbackTop.style.color = "#f43f5e";
+                    feedbackTop.innerText = `Wrong! Learn more.`;
+                    
+                    // Add to mistake bank if not in practice mode
+                    if (!this.state.isMistakeMode) {
+                        this.addToMistakeBank(q);
+                    }
+                }
+
+                document.getElementById('quiz-score').innerText = `Score: ${this.state.score}`;
+                document.getElementById('next-btn-container').classList.remove('hidden');
+                
+                if(q.e) {
+                    const expBox = document.getElementById('explanation-box');
+                    expBox.innerText = `Explanation: ${q.e}`;
+                    expBox.style.display = 'block';
+                }
+
+                if (this.state.currentIndex === this.state.quizSet.length - 1) {
+                    document.getElementById('btn-next').innerText = "Finish Exam";
+                } else {
+                    document.getElementById('btn-next').innerText = "Next Question ➡";
+                }
+            },
+
+            // Mistake Bank Operations
+            addToMistakeBank: function(q) {
+                const tid = this.state.currentTopicId;
+                if (!this.state.mistakeBank[tid]) this.state.mistakeBank[tid] = [];
+                // Check if already exists
+                const exists = this.state.mistakeBank[tid].find(item => item.q === q.q);
+                if (!exists) {
+                    this.state.mistakeBank[tid].push(q);
+                    this.saveMistakeBank();
+                }
+            },
+
+            removeFromMistakeBank: function(q) {
+                const tid = this.state.currentTopicId;
+                if (this.state.mistakeBank[tid]) {
+                    this.state.mistakeBank[tid] = this.state.mistakeBank[tid].filter(item => item.q !== q.q);
+                    this.saveMistakeBank();
+                }
+            },
+
+            saveMistakeBank: function() {
+                localStorage.setItem('madesh_mistake_bank', JSON.stringify(this.state.mistakeBank));
+            },
+
+            // Skip Navigation Logic
+            openSkipGrid: function() {
+                const grid = document.getElementById('skip-grid');
+                grid.innerHTML = "";
+                this.state.quizSet.forEach((_, idx) => {
+                    const num = document.createElement('div');
+                    num.className = 'skip-num' + (this.state.currentIndex === idx ? ' current' : '');
+                    num.innerText = idx + 1;
+                    num.onclick = () => {
+                        this.state.currentIndex = idx;
+                        this.renderQuestion();
+                        this.closeSkipGrid();
+                    };
+                    grid.appendChild(num);
+                });
+                document.getElementById('skip-overlay').classList.add('active');
+            },
+
+            closeSkipGrid: function() {
+                document.getElementById('skip-overlay').classList.remove('active');
+            },
+
+            nextQuestion: function() {
+                this.state.currentIndex++;
+                if (this.state.currentIndex < this.state.quizSet.length) {
+                    this.renderQuestion();
+                } else {
+                    this.showResults();
+                }
+            },
+
+            showResults: function() {
+                this.showScreen('screen-result');
+                const total = this.state.quizSet.length;
+                const percentage = Math.round((this.state.score / total) * 100);
+                document.getElementById('final-score').innerText = `${percentage}%`;
+                document.getElementById('result-accuracy').innerText = `You got ${this.state.score} / ${total} correct.`;
+                document.getElementById('result-msg').innerText = percentage >= 50 ? "Great job! Keep it up." : "Keep practicing!";
+            },
+
+            openWhatsApp: function() {
+                const msg = `Hello! I am ${this.state.user.name} (${this.state.user.qual}). I want to unlock Set B for Koshi Province.`;
+                window.open(`${WHATSAPP_URL}?text=${encodeURIComponent(msg)}`, '_blank');
+            },
+
+            verifyCode: function() {
+                const code = document.getElementById('premium-code').value.trim();
+                const btn = document.getElementById('btn-verify');
+                if (!code) return alert("Enter code");
+                btn.innerHTML = 'Verifying <div class="spinner"></div>';
+                fetch(`${WEB_APP_URL}?code=${code}&name=${this.state.user.name}&qual=${this.state.user.qual}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            this.state.isPremium = true;
+                            localStorage.setItem('madesh_pro_premium', 'true');
+                            this.openTopic({ id: this.state.currentTopicId, title: "Updated" });
+                        } else {
+                            alert("Invalid Code");
+                        }
+                    }).finally(() => btn.innerHTML = 'Verify & Unlock');
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => app.init());
+    </script>
+</body>
+</html>
